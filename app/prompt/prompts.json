@@ -5,18 +5,18 @@
         "PromptDetails": [
         {
             "PromptsSequence": "001",
-            "PromptsDescription": "abc",
-            "PromptText":"abc"
+            "PromptsDescription": "what is genAI?",
+            "PromptText":"what is genAI?"
         },
         {
             "PromptsSequence": "002",
-            "PromptsDescription": "def",
-            "PromptText":"def"
+            "PromptsDescription": "what is LLM?",
+            "PromptText":"what is LLM?"
         },
         {
             "PromptsSequence": "003",
-            "PromptsDescription": "pqr",
-            "PromptText":"pqr"
+            "PromptsDescription": "what is vector?",
+            "PromptText":"what is vector?"
         }
         ]
     },

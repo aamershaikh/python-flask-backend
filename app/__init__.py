@@ -13,8 +13,10 @@ def create_app():
     db.init_app(app)
 
     # Import and register blueprints
-    from app.user_routes import user_blueprint
+    from app.user.user_routes import user_blueprint
+    from app.account.account import account_blueprint
     app.register_blueprint(user_blueprint)
+    app.register_blueprint(account_blueprint)
 
     # Create tables
     with app.app_context():

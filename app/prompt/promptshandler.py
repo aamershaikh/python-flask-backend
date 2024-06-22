@@ -48,6 +48,13 @@ def call_openai_api(prompt_text):
 for prompt_detail in data["PromptDetails"]:
     prompt_text = prompt_detail["PromptText"]
     print(f"Calling OpenAI API for Prompt: {prompt_text}")
+    #response_text = call_openai_api(prompt_text)
     response_text = call_openai_api(prompt_text)
     print(f"Response: {response_text}")
 
+    if prompt_sequence == "001":
+            cursor.execute('''
+            INSERT INTO prompts (PromptsSequence, Column1)
+            VALUES (?, ?)
+            ON CONFLICT(PromptsSequence) DO UPDATE SET Column1=excluded.Column1
+            ''', (prompt_sequence, response_text))

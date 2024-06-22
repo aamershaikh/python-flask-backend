@@ -1,4 +1,4 @@
-from app import db
+from . import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,6 +7,8 @@ class User(db.Model):
 
 
 class Account(db.Model):
-    account_id = db.Column(db.Integer, primary_key=True)
-    summarizationavailable = db.Column(db.String(500), nullable=False)
-    accountsummary = db.Column(db.String(500), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    account_number = db.Column(db.String(20), nullable=False, unique=True)
+    summarizatioavailable = db.Column(db.String(20))
+    accountsummary = db.Column(db.String(255))
+    summarytext = db.Column(db.String(255))

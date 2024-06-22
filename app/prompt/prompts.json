@@ -1,0 +1,44 @@
+[
+    {
+        "Type": "Summarization",
+        "Version": "1.0",
+        "PromptDetails": [
+        {
+            "PromptsSequence": "001",
+            "PromptsDescription": "abc",
+            "PromptText":"abc"
+        },
+        {
+            "PromptsSequence": "002",
+            "PromptsDescription": "def",
+            "PromptText":"def"
+        },
+        {
+            "PromptsSequence": "003",
+            "PromptsDescription": "pqr",
+            "PromptText":"pqr"
+        }
+        ]
+    },
+    {
+        "Type": "Records",
+        "Version": "1.0",
+        "PromptDetails": [
+        {
+            "PromptsSequence": "001",
+            "PromptsDescription": "abc",
+            "PromptText":"abc"
+        },
+        {
+            "PromptsSequence": "002",
+            "PromptsDescription": "def",
+            "PromptText":"def"
+        },
+        {
+            "PromptsSequence": "003",
+            "PromptsDescription": "pqr",
+            "PromptText":"pqr"
+        }
+        ]
+    }
+]

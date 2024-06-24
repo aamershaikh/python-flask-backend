@@ -1,69 +1,70 @@
 import json
 import openai
+from sqlalchemy import create_engine, Column, Integer, String, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# Replace with your OpenAI API key
-openai.api_key = 'OPENAI_API_KEY'
+# Read the JSON file
+with open('/Users/aamershaikh/Documents/python-flask-backend/app/prompt/prompts.json') as f:
+    data = json.load(f)
 
-# Load JSON data from a local file
-with open('prompts.json', 'r') as file:
-    data = json.load(file)
+# Extract the type and prompt details
+prompt_type = data[0]['Type']
+prompt_details = data[0]['PromptDetails']
 
-# Extract Type and PromptDetails
-prompt_type = data["Type"]
-prompt_details = data["PromptDetails"]
+# OpenAI API key
+openai.api_key = 'my-openai-key'
 
-print(f"Prompt Type: {prompt_type}")
+# Database setup using SQLAlchemy
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/asdb'
+engine = create_engine(SQLALCHEMY_DATABASE_URI)
+Session = sessionmaker(bind=engine)
+session = Session()
+Base = declarative_base()
+
+# Define the Account model
+class Account(Base):
+    __tablename__ = 'account'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    summarizatioavailable = Column(Text)
+    accountsummary = Column(Text)
+    summarytext = Column(Text)
 
 # Function to call OpenAI API
-def call_openai_api(prompt_text):
+def get_openai_response(prompt):
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=prompt_text,
-        max_tokens=50
+        prompt=prompt,
+        max_tokens=100
     )
     return response.choices[0].text.strip()
 
-# Function to call OpenAI API
-def call_openai_api(prompt_text):
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt_text,
-        max_tokens=50
-    )
-    return response.choices[0].text.strip()
+# Mapping from PromptSequence to database columns
+sequence_to_column = {
+    "001": "summarizatioavailable",
+    "002": "accountsummary",
+    "003": "summarytext"
+}
 
-# Process each PromptDetail
-for prompt_detail in prompt_details:
-    prompt_sequence = prompt_detail["PromptsSequence"]
-    prompt_text = prompt_detail["PromptText"]
+# Dictionary to hold the responses
+responses = {}
 
-    print(f"Calling OpenAI API for PromptSequence {prompt_sequence}: {prompt_text}")
-    response_text = call_openai_api(prompt_text)
-    print(f"Response: {response_text}")
+# Loop through the prompts and get responses
+for detail in prompt_details:
+    sequence = detail['PromptsSequence']
+    prompt_text = detail['PromptText']
+    response = get_openai_response(prompt_text)
+    responses[sequence] = response
 
-    # Update database based on PromptSequence
-    if prompt_sequence == "001":
-        account_entry = session.query(Account).first()
-        if account_entry:
-            account_entry.summarizationavailable = response_text
-        else:
-            account_entry = Account(summarizationavailable=response_text)
-            session.add(account_entry)
-    elif prompt_sequence == "002":
-        account_entry = session.query(Account).first()
-        if account_entry:
-            account_entry.accountsummary = response_text
-        else:
-            account_entry = Account(accountsummary=response_text)
-            session.add(account_entry)
-    elif prompt_sequence == "003":
-        account_entry = session.query(Account).first()
-        if account_entry:
-            account_entry.accountdetails = response_text
-        else:
-            account_entry = Account(accountdetails=response_text)
-            session.add(account_entry)
+# Create a new account instance with the responses
+new_account = Account(
+    summarizatioavailable=responses.get("001"),
+    accountsummary=responses.get("002"),
+    summarytext=responses.get("003")
+)
 
-# Commit changes to the database
+# Insert the new account into the database
+session.add(new_account)
 session.commit()
-session.close()
+
+print("Data inserted successfully.")
